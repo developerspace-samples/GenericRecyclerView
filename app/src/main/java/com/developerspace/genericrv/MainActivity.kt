@@ -18,22 +18,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        fetchDogs()
-        val customRecyclerView = findViewById<GenericRecyclerView>(R.id.custom_recyclerview)
-        customRecyclerView.initialize(object : OnRecyclerListListener {
-            override fun onHeaderSet(textView: TextView, any: Any) {
-                textView.text = (any as User).name.substring(0,1)
-            }
-
+        fetchUsers()
+        val genericRecyclerView = findViewById<GenericRecyclerView>(R.id.custom_recyclerview)
+        genericRecyclerView.initialize(object : OnRecyclerListListener {
+            //This method is Important. It is necessary to create and return layout file
             override fun getItemLayout(): Int {
                 return R.layout.item_layout
             }
 
+            //This method is Important.
             override fun onItemSet(mItemBinding: ViewDataBinding, item: Any) {
                 val binding = mItemBinding as ItemLayoutBinding
                 binding.itemVariable = item as User
                 Glide.with(this@MainActivity).load(item.image)
                     .diskCacheStrategy(DiskCacheStrategy.NONE).into(binding.image)
+            }
+
+            override fun onHeaderSet(textView: TextView, any: Any) {
+                textView.text = (any as User).name.substring(0,1)
             }
 
             override fun getHeaderId(var1: Int, item: Any): Long {
@@ -50,11 +52,11 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity,"Item Long Click ${(item as User).description}",Toast.LENGTH_LONG).show()
             }
         })
-        customRecyclerView.setList(usersList)
+        genericRecyclerView.setList(usersList)
 
     }
 
-    fun fetchDogs() {
+    fun fetchUsers() {
         for (i in 1..5) {
             val user = User("https://picsum.photos/id/${i}/200/200.jpg", "A User_$i", "A User $i Description")
             usersList.add(user)
@@ -63,13 +65,5 @@ class MainActivity : AppCompatActivity() {
             val user = User("https://picsum.photos/id/${i*6}/200/200.jpg", "B User_$i", "B User $i Description")
             usersList.add(user)
         }
-        Log.e("fetchDogs: ",usersList.toString() )
     }
-
-//    override fun onItemChange(viewHolder: CustomRecyclerViewAdapter.ItemViewHolder, item: Any) {
-//        viewHolder.customRowBinding.itemVariable = item as Dog
-//        Log.e( "onItemChange: ",item.toString())
-//        viewHolder.customRowBinding.executePendingBindings()
-//        viewHolder.customRowBinding.notifyChange()
-//    }
 }
