@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Generic RecyclerView</string>
+    <string name="item_variable">itemVariable</string>
+</resources>
